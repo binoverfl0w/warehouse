@@ -26,9 +26,15 @@ import java.util.stream.Collectors;
 @RequestMapping("/users")
 public class UserController {
 
+    private UserService userService;
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private JWTTokenUtil jwtTokenUtil;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestBody UserDTO userDTO) {
@@ -46,5 +52,22 @@ public class UserController {
         oAuthTokenDTO.setType("Bearer");
         oAuthTokenDTO.setExpiresIn(jwtTokenUtil.getValidPeriod());
         return ResponseEntity.ok(oAuthTokenDTO);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<Object> getUsers(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+        LOGGER.info("[GET /users] page = " + page + ", size = " + size);
+
+        if (page == null) page = 0;
+        if (size == null) size = 20;
+
+        PageVO<User> users = userService.getUserPage(page, size);
+        PageDTO<UserDTO> usersDTO = new PageDTO<>();
+        usersDTO.setItems(users.getItems().stream().map(UserDTO::fromDomainUser).collect(Collectors.toList()));
+        usersDTO.setTotalItems(users.getTotalItems());
+        usersDTO.setTotalPages(users.getTotalPages());
+        usersDTO.setCurrentPage(users.getCurrentPage());
+        return ResponseEntity.ok(usersDTO);
     }
 }

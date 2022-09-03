@@ -22,4 +22,9 @@ public class AppConfig {
     public CombinedInterface authenticationFacade(IUserStore userStore) {
         return new AuthenticationFacade(userStore);
     }
+
+    @Bean
+    public UserService userService(IUserStore userStore) {
+        return new UserService(userStore);
+    }
 }
