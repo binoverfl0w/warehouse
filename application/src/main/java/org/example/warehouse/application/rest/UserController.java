@@ -10,16 +10,15 @@ import org.example.warehouse.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,6 +27,7 @@ public class UserController {
 
     private UserService userService;
     @Autowired private AuthenticationManager authenticationManager;
+    @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JWTTokenUtil jwtTokenUtil;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -84,6 +84,7 @@ public class UserController {
                 ", email = " + userDTO.getEmail() +
                 ", password = " + userDTO.getPassword() +
                 ", role = " + userDTO.getRole());
+        if (userDTO.getPassword() != null) userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return ResponseEntity.ok(UserDTO.fromDomainUser(userService.createUser(userDTO.toDomainUser())));
     }
 
