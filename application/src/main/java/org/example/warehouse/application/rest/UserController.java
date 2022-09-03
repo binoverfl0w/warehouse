@@ -70,4 +70,10 @@ public class UserController {
         usersDTO.setCurrentPage(users.getCurrentPage());
         return ResponseEntity.ok(usersDTO);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getUser(@PathVariable Long id) {
+        LOGGER.info("[GET /users/" + id + "] id = " + id);
+        return ResponseEntity.ok(UserDTO.fromDomainUser(userService.getUser(id)));
+    }
 }

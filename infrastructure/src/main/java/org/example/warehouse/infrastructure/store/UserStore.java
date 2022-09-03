@@ -40,4 +40,9 @@ public class UserStore implements IUserStore {
                 userEntities.getNumber()
         );
     }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id).map(UserEntity::toDomainUser);
+    }
 }
