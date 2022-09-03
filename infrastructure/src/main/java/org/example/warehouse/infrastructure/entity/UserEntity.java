@@ -48,6 +48,7 @@ public class UserEntity {
         UserEntity mapUser = new UserEntity();
         mapUser.setId(user.getId());
         mapUser.setFullname(user.getFullname().getValue());
+        mapUser.setUsername(user.getUsername().getValue());
         mapUser.setEmail(user.getEmailAddress().getValue());
         mapUser.setPassword(user.getPassword().getValue());
         mapUser.setRole(RoleEntity.fromDomainRole(user.getRole()));
