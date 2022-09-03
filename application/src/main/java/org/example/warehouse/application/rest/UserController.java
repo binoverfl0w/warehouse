@@ -86,4 +86,15 @@ public class UserController {
                 ", role = " + userDTO.getRole());
         return ResponseEntity.ok(UserDTO.fromDomainUser(userService.createUser(userDTO.toDomainUser())));
     }
+
+    @PutMapping
+    public ResponseEntity<Object> updateUser(@RequestBody UserDTO userDTO) {
+        LOGGER.info("[PUT /users] id = " + userDTO.getId() +
+                ", fullname = " + userDTO.getFullname() +
+                ", username = " + userDTO.getUsername() +
+                ", email = " + userDTO.getEmail() +
+                ", password = " + userDTO.getPassword() +
+                ", role = " + userDTO.getRole());
+        return ResponseEntity.ok(UserDTO.fromDomainUser(userService.updateUser(userDTO.toDomainUser())));
+    }
 }

@@ -34,4 +34,16 @@ public class UserService extends DomainService {
         user.setRole(userStore.findRoleByName(user.getRole().getName().getValue()).orElseThrow(() -> new RoleNotFoundException("name", user.getRole().getName().getValue())));
         return userStore.save(user);
     }
+
+    public User updateUser(User user) {
+        if (!hasRole("SYSTEM_ADMIN")) throw new AccessDeniedException();
+        User toUpdate = userStore.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("id", user.getId().toString()));
+        if (user.getFullname() != null) toUpdate.setFullname(user.getFullname());
+        if (user.getUsername() != null) toUpdate.setUsername(user.getUsername());
+        if (user.getEmailAddress() != null) toUpdate.setEmailAddress(user.getEmailAddress());
+        if (user.getPassword() != null) toUpdate.setPassword(user.getPassword());
+        if (user.getRole() != null) toUpdate.setRole(userStore.findRoleByName(user.getRole().getName().getValue()).orElseThrow(() -> new RoleNotFoundException("name", user.getRole().getName().getValue())));
+        toUpdate.isValid();
+        return userStore.save(toUpdate);
+    }
 }
