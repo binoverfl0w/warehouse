@@ -12,13 +12,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 
 @Getter
 @Setter
 
-public class UserDTO implements UserDetails {
+public class UserDTO implements UserDetails, Serializable {
     @JsonProperty(value = "id", index = 0)
     private Long id;
 
