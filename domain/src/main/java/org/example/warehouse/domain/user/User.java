@@ -20,17 +20,18 @@ public class User extends DomainModel {
 
     public User(Long id, Fullname fullname, Username username, EmailAddress emailAddress, Password password, Role role) {
         super(id);
-
-        if (fullname == null) throw new IllegalArgumentException("Fullname is required");
-        if (username == null) throw new IllegalArgumentException("Username is required");
-        if (emailAddress == null) throw new IllegalArgumentException("Email address is required");
-        if (password == null) throw new IllegalArgumentException("Password is required");
-        if (role == null) throw new IllegalArgumentException("Role is required");
-
         this.fullname = fullname;
         this.username = username;
         this.emailAddress = emailAddress;
         this.password = password;
         this.role = role;
+    }
+
+    public void isValid() {
+        if (fullname == null) throw new IllegalArgumentException("Fullname is required");
+        if (username == null) throw new IllegalArgumentException("Username is required");
+        if (emailAddress == null) throw new IllegalArgumentException("Email address is required");
+        if (password == null) throw new IllegalArgumentException("Password is required");
+        if (role == null) throw new IllegalArgumentException("Role is required");
     }
 }

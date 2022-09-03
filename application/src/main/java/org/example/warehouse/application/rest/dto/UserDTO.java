@@ -83,10 +83,10 @@ public class UserDTO implements UserDetails, Serializable {
     public User toDomainUser() {
         return new User(
                 id,
-                new Fullname(fullname),
-                new Username(username),
-                new EmailAddress(email),
-                new Password(password),
+                fullname == null ? null : new Fullname(fullname),
+                username == null ? null : new Username(username),
+                email == null ? null : new EmailAddress(email),
+                password == null ? null : new Password(password),
                 role == null ? null : role.toDomainRole()
         );
     }

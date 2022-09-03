@@ -15,10 +15,11 @@ public class Role extends DomainModel {
 
     public Role(Long id, Name name, Description description) {
         super(id);
-
-        if (name == null) throw new IllegalArgumentException("Name is required");
-
         this.name = name;
         this.description = description;
+    }
+
+    public void isValid() {
+        if (name == null) throw new IllegalArgumentException("Name is required");
     }
 }

@@ -25,8 +25,8 @@ public class RoleDTO implements Serializable {
     public Role toDomainRole() {
         return new Role(
                 id,
-                new Name(name),
-                new Description(description)
+                name == null ? null : new Name(name),
+                description == null ? null : new Description(description)
         );
     }
 
