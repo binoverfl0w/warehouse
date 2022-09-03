@@ -17,4 +17,9 @@ public class AppConfig {
     public IUserStore userStore(UserRepository userRepository, RoleRepository roleRepository) {
         return new UserStore(userRepository, roleRepository);
     }
+
+    @Bean
+    public CombinedInterface authenticationFacade(IUserStore userStore) {
+        return new AuthenticationFacade(userStore);
+    }
 }
