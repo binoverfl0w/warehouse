@@ -76,4 +76,14 @@ public class UserController {
         LOGGER.info("[GET /users/" + id + "] id = " + id);
         return ResponseEntity.ok(UserDTO.fromDomainUser(userService.getUser(id)));
     }
+
+    @PostMapping
+    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO) {
+        LOGGER.info("[POST /users] fullname = " + userDTO.getFullname() +
+                ", username = " + userDTO.getUsername() +
+                ", email = " + userDTO.getEmail() +
+                ", password = " + userDTO.getPassword() +
+                ", role = " + userDTO.getRole());
+        return ResponseEntity.ok(UserDTO.fromDomainUser(userService.createUser(userDTO.toDomainUser())));
+    }
 }

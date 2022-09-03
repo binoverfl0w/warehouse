@@ -6,6 +6,7 @@ import org.example.warehouse.domain.user.IUserStore;
 import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.service.exception.AccessDeniedException;
+import org.example.warehouse.service.exception.RoleNotFoundException;
 import org.example.warehouse.service.exception.UserNotFoundException;
 
 import java.util.List;
@@ -26,5 +27,11 @@ public class UserService extends DomainService {
     public User getUser(Long id) {
         if (!hasRole("SYSTEM_ADMIN")) throw new AccessDeniedException();
         return userStore.findById(id).orElseThrow(() -> new UserNotFoundException("id", id.toString()));
+    }
+
+    public User createUser(User user) {
+        if (!hasRole("SYSTEM_ADMIN")) throw new AccessDeniedException();
+        user.setRole(userStore.findRoleByName(user.getRole().getName().getValue()).orElseThrow(() -> new RoleNotFoundException("name", user.getRole().getName().getValue())));
+        return userStore.save(user);
     }
 }

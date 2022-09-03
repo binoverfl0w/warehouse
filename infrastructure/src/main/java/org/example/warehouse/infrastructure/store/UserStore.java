@@ -1,8 +1,10 @@
 package org.example.warehouse.infrastructure.store;
 
 import org.example.warehouse.domain.user.IUserStore;
+import org.example.warehouse.domain.user.Role;
 import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.infrastructure.entity.RoleEntity;
 import org.example.warehouse.infrastructure.entity.UserEntity;
 import org.example.warehouse.infrastructure.repository.RoleRepository;
 import org.example.warehouse.infrastructure.repository.UserRepository;
@@ -44,5 +46,15 @@ public class UserStore implements IUserStore {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id).map(UserEntity::toDomainUser);
+    }
+
+    @Override
+    public User save(User user) {
+        return userRepository.save(UserEntity.fromDomainUser(user)).toDomainUser();
+    }
+
+    @Override
+    public Optional<Role> findRoleByName(String name) {
+        return roleRepository.findByName(name).map(RoleEntity::toDomainRole);
     }
 }

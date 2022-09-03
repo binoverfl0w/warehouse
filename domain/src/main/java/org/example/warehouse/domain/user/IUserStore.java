@@ -10,4 +10,8 @@ public interface IUserStore {
     PageVO<User> getUserPage(int page, int size);
 
     Optional<User> findById(Long id);
+
+    User save(User user);
+
+    Optional<Role> findRoleByName(String name);
 }
