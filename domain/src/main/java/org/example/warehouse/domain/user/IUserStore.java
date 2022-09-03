@@ -13,5 +13,7 @@ public interface IUserStore {
 
     User save(User user);
 
+    void deleteById(Long id);
+
     Optional<Role> findRoleByName(String name);
 }

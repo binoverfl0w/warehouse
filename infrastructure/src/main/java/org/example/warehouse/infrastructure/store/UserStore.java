@@ -54,6 +54,11 @@ public class UserStore implements IUserStore {
     }
 
     @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
     public Optional<Role> findRoleByName(String name) {
         return roleRepository.findByName(name).map(RoleEntity::toDomainRole);
     }

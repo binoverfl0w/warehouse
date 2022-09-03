@@ -46,4 +46,10 @@ public class UserService extends DomainService {
         toUpdate.isValid();
         return userStore.save(toUpdate);
     }
+
+    public void deleteUser(Long id) {
+        if (!hasRole("SYSTEM_ADMIN")) throw new AccessDeniedException();
+        userStore.findById(id).orElseThrow(() -> new UserNotFoundException("id", id.toString()));
+        userStore.deleteById(id);
+    }
 }
