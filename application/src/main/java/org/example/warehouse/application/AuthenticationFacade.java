@@ -18,7 +18,12 @@ public class AuthenticationFacade implements CombinedInterface {
     @Override
     public User getAuthenticatedUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDTO authenticated = (UserDTO) authentication.getPrincipal();
+        UserDTO authenticated = null;
+        try {
+            authenticated = (UserDTO) authentication.getPrincipal();
+        } catch (ClassCastException ex) {
+            // Do nothing
+        }
         return authenticated == null ? null : authenticated.toDomainUser();
     }
 
