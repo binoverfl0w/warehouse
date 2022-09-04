@@ -10,4 +10,6 @@ public interface IItemStore {
     Optional<Item> findById(Long id);
 
     Item save(Item item);
+
+    void deleteById(Long id);
 }

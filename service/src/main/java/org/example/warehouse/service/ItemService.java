@@ -39,4 +39,10 @@ public class ItemService extends DomainService {
         toUpdate.isValid();
         return itemStore.save(toUpdate);
     }
+
+    public void deleteItem(Long id) {
+        if (!hasRole("WAREHOUSE_MANAGER")) throw new AccessDeniedException();
+        itemStore.findById(id).orElseThrow(() -> new ItemNotFoundException("id", id.toString()));
+        itemStore.deleteById(id);
+    }
 }

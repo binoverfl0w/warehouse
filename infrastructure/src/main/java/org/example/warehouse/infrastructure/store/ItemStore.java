@@ -38,4 +38,9 @@ public class ItemStore implements IItemStore {
     public Item save(Item item) {
         return itemRepository.save(ItemEntity.fromDomainItem(item)).toDomainItem();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        itemRepository.deleteById(id);
+    }
 }

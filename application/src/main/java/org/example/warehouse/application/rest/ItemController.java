@@ -6,6 +6,8 @@ import org.example.warehouse.domain.item.Item;
 import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +51,11 @@ public class ItemController {
     public ResponseEntity<Object> updateItem(@PathVariable Long id, @RequestBody ItemDTO itemDTO) {
         itemDTO.setId(id);
         return ResponseEntity.ok(ItemDTO.fromDomainItem(itemService.updateItem(itemDTO.toDomainItem())));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteItem(@PathVariable Long id) {
+        itemService.deleteItem(id);
+        return new ResponseEntity<>(ResponseEntity.EMPTY, ResponseEntity.EMPTY.getHeaders(), HttpStatus.NO_CONTENT);
     }
 }
