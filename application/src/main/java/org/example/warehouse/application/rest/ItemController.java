@@ -44,4 +44,10 @@ public class ItemController {
     public ResponseEntity<Object> createItem(@RequestBody ItemDTO itemDTO) {
         return ResponseEntity.ok(ItemDTO.fromDomainItem(itemService.createItem(itemDTO.toDomainItem())));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updateItem(@PathVariable Long id, @RequestBody ItemDTO itemDTO) {
+        itemDTO.setId(id);
+        return ResponseEntity.ok(ItemDTO.fromDomainItem(itemService.updateItem(itemDTO.toDomainItem())));
+    }
 }

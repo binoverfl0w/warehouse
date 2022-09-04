@@ -1,12 +1,14 @@
 package org.example.warehouse.domain.item;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.example.warehouse.domain.DomainModel;
 import org.example.warehouse.domain.vo.Name;
 import org.example.warehouse.domain.vo.Quantity;
 import org.example.warehouse.domain.vo.UnitPrice;
 
 @Getter
+@Setter
 
 public class Item extends DomainModel {
     private Name name;

@@ -29,4 +29,14 @@ public class ItemService extends DomainService {
         item.isValid();
         return itemStore.save(item);
     }
+
+    public Item updateItem(Item item) {
+        if (!hasRole("WAREHOUSE_MANAGER")) throw new AccessDeniedException();
+        Item toUpdate = itemStore.findById(item.getId()).orElseThrow(() -> new ItemNotFoundException("id", item.getId().toString()));
+        if (item.getName() != null) toUpdate.setName(item.getName());
+        if (item.getQuantity() != null) toUpdate.setQuantity(item.getQuantity());
+        if (item.getUnitPrice() != null) toUpdate.setUnitPrice(item.getUnitPrice());
+        toUpdate.isValid();
+        return itemStore.save(toUpdate);
+    }
 }
