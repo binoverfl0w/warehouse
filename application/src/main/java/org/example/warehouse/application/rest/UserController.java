@@ -10,6 +10,7 @@ import org.example.warehouse.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -98,5 +99,12 @@ public class UserController {
                 ", role = " + userDTO.getRole());
         userDTO.setId(id);
         return ResponseEntity.ok(UserDTO.fromDomainUser(userService.updateUser(userDTO.toDomainUser())));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
+        LOGGER.info("[DELETE /users/" + id + "] id = " + id);
+        userService.deleteUser(id);
+        return new ResponseEntity<>(ResponseEntity.EMPTY, ResponseEntity.EMPTY.getHeaders(), HttpStatus.NO_CONTENT);
     }
 }
