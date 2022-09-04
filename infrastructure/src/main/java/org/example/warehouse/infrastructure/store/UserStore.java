@@ -8,10 +8,8 @@ import org.example.warehouse.infrastructure.entity.RoleEntity;
 import org.example.warehouse.infrastructure.entity.UserEntity;
 import org.example.warehouse.infrastructure.repository.RoleRepository;
 import org.example.warehouse.infrastructure.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +28,11 @@ public class UserStore implements IUserStore {
     @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username).map(UserEntity::toDomainUser);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email).map(UserEntity::toDomainUser);
     }
 
     @Override

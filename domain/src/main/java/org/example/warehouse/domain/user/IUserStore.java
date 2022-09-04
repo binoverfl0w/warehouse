@@ -7,6 +7,8 @@ import java.util.Optional;
 public interface IUserStore {
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByEmail(String email);
+
     PageVO<User> getUserPage(int page, int size);
 
     Optional<User> findById(Long id);
