@@ -42,5 +42,10 @@ public class OrderController {
         ordersDTO.setCurrentPage(orders.getCurrentPage());
         return ResponseEntity.ok(ordersDTO);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(OrderDTO.fromDomainOrder(orderService.getOrder(id)));
+    }
 }
 

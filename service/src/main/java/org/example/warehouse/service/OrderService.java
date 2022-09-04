@@ -5,6 +5,7 @@ import org.example.warehouse.domain.order.IOrderStore;
 import org.example.warehouse.domain.order.Order;
 import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.service.exception.AccessDeniedException;
+import org.example.warehouse.service.exception.OrderNotFoundException;
 
 import java.util.Set;
 
@@ -23,5 +24,10 @@ public class OrderService extends DomainService {
     public PageVO<Order> getOrderPageFilterStatus(Set<String> statuses, int page, int size) {
         if (!hasRole("WAREHOUSE_MANAGER") && !hasRole("CLIENT")) throw new AccessDeniedException();
         return orderStore.getOrderPageFilterStatus(statuses, page, size);
+    }
+
+    public Order getOrder(Long id) {
+        if (!hasRole("WAREHOUSE_MANAGER") && !hasRole("CLIENT")) throw new AccessDeniedException();
+        return orderStore.findById(id).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,5 +40,10 @@ public class OrderStore implements IOrderStore {
                 orderEntities.getTotalPages(),
                 orderEntities.getNumber()
         );
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id).map(OrderEntity::toDomainOrder);
     }
 }
