@@ -32,6 +32,17 @@ public class OrderStore implements IOrderStore {
     }
 
     @Override
+    public PageVO<Order> getOrderPageForUser(Long id, int page, int size) {
+        Page<OrderEntity> orderEntities = orderRepository.findByUserId(id, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,"submittedDate")));
+        return new PageVO<>(
+                orderEntities.getContent().stream().map(OrderEntity::toDomainOrder).collect(Collectors.toList()),
+                orderEntities.getTotalElements(),
+                orderEntities.getTotalPages(),
+                orderEntities.getNumber()
+        );
+    }
+
+    @Override
     public PageVO<Order> getOrderPageFilterStatus(Set<String> statuses, int page, int size) {
         Page<OrderEntity> orderEntities = orderRepository.findByStatusIn(statuses, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,"submittedDate")));
         return new PageVO<>(
@@ -43,7 +54,23 @@ public class OrderStore implements IOrderStore {
     }
 
     @Override
+    public PageVO<Order> getOrderPageFilterStatusForUser(Long id, Set<String> statuses, int page, int size) {
+        Page<OrderEntity> orderEntities = orderRepository.findByUserIdAndStatusIn(id, statuses, PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,"submittedDate")));
+        return new PageVO<>(
+                orderEntities.getContent().stream().map(OrderEntity::toDomainOrder).collect(Collectors.toList()),
+                orderEntities.getTotalElements(),
+                orderEntities.getTotalPages(),
+                orderEntities.getNumber()
+        );
+    }
+
+    @Override
     public Optional<Order> findById(Long id) {
         return orderRepository.findById(id).map(OrderEntity::toDomainOrder);
+    }
+
+    @Override
+    public Optional<Order> findByIdAndUserId(Long id, Long userId) {
+        return orderRepository.findByIdAndUserId(id, userId).map(OrderEntity::toDomainOrder);
     }
 }

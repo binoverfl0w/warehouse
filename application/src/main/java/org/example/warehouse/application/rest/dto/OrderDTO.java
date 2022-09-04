@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.warehouse.domain.order.Order;
+import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.Status;
 
 import java.time.LocalDateTime;
@@ -17,21 +18,25 @@ public class OrderDTO {
     @JsonProperty(value = "id", index = 0)
     private Long id;
 
-    @JsonProperty(value = "submitted_date", index = 1)
+    @JsonProperty(value = "user", index = 1)
+    private UserDTO userDTO;
+
+    @JsonProperty(value = "submitted_date", index = 2)
     private LocalDateTime submittedDate;
 
-    @JsonProperty(value = "deadline_date", index = 2)
+    @JsonProperty(value = "deadline_date", index = 3)
     private LocalDateTime deadlineDate;
 
-    @JsonProperty(value = "status", index = 3)
+    @JsonProperty(value = "status", index = 4)
     private String status;
 
-    @JsonProperty(value = "items", index = 4)
+    @JsonProperty(value = "items", index = 5)
     private Set<OrderItemDTO> orderItems;
 
     public Order toDomainOrder() {
         return new Order(
                 id,
+                userDTO == null ? null : userDTO.toDomainUser(),
                 submittedDate == null ? null : submittedDate,
                 deadlineDate == null ? null : deadlineDate,
                 status == null ? null : new Status(status),
@@ -42,6 +47,7 @@ public class OrderDTO {
     public static OrderDTO fromDomainOrder(Order order) {
         OrderDTO mapOrder = new OrderDTO();
         mapOrder.setId(order.getId());
+        mapOrder.setUserDTO(UserDTO.fromDomainUser(order.getUser()));
         mapOrder.setSubmittedDate(order.getSubmittedDate());
         mapOrder.setDeadlineDate(order.getDeadlineDate());
         mapOrder.setStatus(order.getStatus().getValue());

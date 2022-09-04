@@ -21,6 +21,10 @@ public class OrderEntity {
     @Column(name = "ID")
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private UserEntity user;
+
     @Column(name = "SUBMITTED_DATE", nullable = false)
     private LocalDateTime submittedDate;
 
@@ -36,6 +40,7 @@ public class OrderEntity {
     public Order toDomainOrder() {
         return new Order(
                 id,
+                user.toDomainUser(),
                 submittedDate,
                 deadlineDate,
                 new Status(status),
@@ -45,6 +50,7 @@ public class OrderEntity {
 
     public static OrderEntity fromDomainOrder(Order order) {
         OrderEntity mapOrder = new OrderEntity();
+        mapOrder.setUser(UserEntity.fromDomainUser(order.getUser()));
         mapOrder.setSubmittedDate(order.getSubmittedDate());
         mapOrder.setDeadlineDate(order.getDeadlineDate());
         mapOrder.setStatus(order.getStatus().getValue());
