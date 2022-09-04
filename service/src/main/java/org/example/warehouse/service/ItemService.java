@@ -23,4 +23,10 @@ public class ItemService extends DomainService {
         if (!hasRole("WAREHOUSE_MANAGER") && !hasRole("CLIENT")) throw new AccessDeniedException();
         return itemStore.findById(id).orElseThrow(() -> new ItemNotFoundException("id", id.toString()));
     }
+
+    public Item createItem(Item item) {
+        if (!hasRole("WAREHOUSE_MANAGER")) throw new AccessDeniedException();
+        item.isValid();
+        return itemStore.save(item);
+    }
 }

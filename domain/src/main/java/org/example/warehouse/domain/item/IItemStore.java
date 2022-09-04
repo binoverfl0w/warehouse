@@ -8,4 +8,6 @@ public interface IItemStore {
     PageVO<Item> getItemPage(int page, int size);
 
     Optional<Item> findById(Long id);
+
+    Item save(Item item);
 }

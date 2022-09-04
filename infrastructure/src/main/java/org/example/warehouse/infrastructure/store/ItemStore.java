@@ -33,4 +33,9 @@ public class ItemStore implements IItemStore {
     public Optional<Item> findById(Long id) {
         return itemRepository.findById(id).map(ItemEntity::toDomainItem);
     }
+
+    @Override
+    public Item save(Item item) {
+        return itemRepository.save(ItemEntity.fromDomainItem(item)).toDomainItem();
+    }
 }

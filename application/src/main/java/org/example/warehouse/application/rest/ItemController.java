@@ -39,4 +39,9 @@ public class ItemController {
     public ResponseEntity<Object> getItem(@PathVariable Long id) {
         return ResponseEntity.ok(ItemDTO.fromDomainItem(itemService.getItem(id)));
     }
+
+    @PostMapping
+    public ResponseEntity<Object> createItem(@RequestBody ItemDTO itemDTO) {
+        return ResponseEntity.ok(ItemDTO.fromDomainItem(itemService.createItem(itemDTO.toDomainItem())));
+    }
 }
