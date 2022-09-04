@@ -88,14 +88,15 @@ public class UserController {
         return ResponseEntity.ok(UserDTO.fromDomainUser(userService.createUser(userDTO.toDomainUser())));
     }
 
-    @PutMapping
-    public ResponseEntity<Object> updateUser(@RequestBody UserDTO userDTO) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         LOGGER.info("[PUT /users] id = " + userDTO.getId() +
                 ", fullname = " + userDTO.getFullname() +
                 ", username = " + userDTO.getUsername() +
                 ", email = " + userDTO.getEmail() +
                 ", password = " + userDTO.getPassword() +
                 ", role = " + userDTO.getRole());
+        userDTO.setId(id);
         return ResponseEntity.ok(UserDTO.fromDomainUser(userService.updateUser(userDTO.toDomainUser())));
     }
 }
