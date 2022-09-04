@@ -39,7 +39,7 @@ public class ItemEntity {
         );
     }
 
-    public ItemEntity fromDomainItem(Item item) {
+    public static ItemEntity fromDomainItem(Item item) {
         ItemEntity mapItem = new ItemEntity();
         mapItem.setId(item.getId());
         mapItem.setItemName(item.getName().getValue());
