@@ -3,10 +3,14 @@ package org.example.warehouse.application.config;
 import org.example.warehouse.application.AuthenticationFacade;
 import org.example.warehouse.application.CombinedInterface;
 import org.example.warehouse.domain.IAuthenticationFacade;
+import org.example.warehouse.domain.item.IItemStore;
 import org.example.warehouse.domain.user.IUserStore;
+import org.example.warehouse.infrastructure.repository.ItemRepository;
 import org.example.warehouse.infrastructure.repository.RoleRepository;
 import org.example.warehouse.infrastructure.repository.UserRepository;
+import org.example.warehouse.infrastructure.store.ItemStore;
 import org.example.warehouse.infrastructure.store.UserStore;
+import org.example.warehouse.service.ItemService;
 import org.example.warehouse.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,5 +30,15 @@ public class AppConfig {
     @Bean
     public UserService userService(IUserStore userStore) {
         return new UserService(userStore);
+    }
+
+    @Bean
+    public IItemStore itemStore(ItemRepository itemRepository) {
+        return new ItemStore(itemRepository);
+    }
+
+    @Bean
+    public ItemService itemService(IItemStore itemStore) {
+        return new ItemService(itemStore);
     }
 }
