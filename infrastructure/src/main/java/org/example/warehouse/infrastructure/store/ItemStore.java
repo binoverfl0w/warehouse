@@ -8,6 +8,7 @@ import org.example.warehouse.infrastructure.repository.ItemRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ItemStore implements IItemStore {
@@ -26,5 +27,10 @@ public class ItemStore implements IItemStore {
                 itemEntities.getTotalPages(),
                 itemEntities.getNumber()
         );
+    }
+
+    @Override
+    public Optional<Item> findById(Long id) {
+        return itemRepository.findById(id).map(ItemEntity::toDomainItem);
     }
 }

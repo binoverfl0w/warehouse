@@ -7,10 +7,7 @@ import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
@@ -36,5 +33,10 @@ public class ItemController {
         itemsDTO.setTotalPages(items.getTotalPages());
         itemsDTO.setCurrentPage(items.getCurrentPage());
         return ResponseEntity.ok(itemsDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getItem(@PathVariable Long id) {
+        return ResponseEntity.ok(ItemDTO.fromDomainItem(itemService.getItem(id)));
     }
 }
