@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,11 +26,15 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getOrderPage(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+    public ResponseEntity<Object> getOrderPage(@RequestParam(required = false) Set<String> statuses, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
         if (page == null) page = 0;
         if (size == null) size = 20;
 
-        PageVO<Order> orders = orderService.getOrderPage(page, size);
+        PageVO<Order> orders;
+
+        if (statuses == null) orders = orderService.getOrderPage(page, size);
+        else orders = orderService.getOrderPageFilterStatus(statuses, page, size);
+
         PageDTO<OrderBasicDTO> ordersDTO = new PageDTO<>();
         ordersDTO.setItems(orders.getItems().stream().map(OrderBasicDTO::fromDomainOrder).collect(Collectors.toList()));
         ordersDTO.setTotalItems(orders.getTotalItems());
