@@ -72,4 +72,16 @@ public class OrderService extends DomainService {
         }
         throw new AccessDeniedException();
     }
+
+    public void cancelOrder(Long id) {
+        if (!hasRole("CLIENT")) throw new AccessDeniedException();
+        Order toCancel = orderStore.findByIdAndUserId(id, getAuthenticatedUser().getId()).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
+        if (!toCancel.getStatus().getValue().equals(Status.VALUES.FULFILLED.name())
+            && !toCancel.getStatus().getValue().equals(Status.VALUES.UNDER_DELIVERY.name())
+            && !toCancel.getStatus().getValue().equals(Status.VALUES.CANCELLED.name())) {
+            toCancel.setStatus(new Status(Status.VALUES.CANCELLED));
+            toCancel.isValid();
+            orderStore.save(toCancel);
+        } else throw new OrderNotModifiableException("Order cannot be modified");
+    }
 }

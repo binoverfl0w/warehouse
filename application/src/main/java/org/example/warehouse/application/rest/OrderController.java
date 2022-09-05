@@ -11,6 +11,7 @@ import org.example.warehouse.service.ItemService;
 import org.example.warehouse.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +67,12 @@ public class OrderController {
         Order order = orderDTO.toDomainOrder();
         order.getOrderItems().forEach(orderItem -> orderItem.setItem(itemService.getItem(orderItem.getItem().getId())));
         return ResponseEntity.ok(OrderDTO.fromDomainOrder(orderService.updateOrder(order)));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<Object> cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrder(id);
+        return ResponseEntity.ok(null);
     }
 }
 

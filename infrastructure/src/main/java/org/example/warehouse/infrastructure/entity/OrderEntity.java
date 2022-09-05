@@ -51,6 +51,7 @@ public class OrderEntity {
 
     public static OrderEntity fromDomainOrder(Order order) {
         OrderEntity mapOrder = new OrderEntity();
+        mapOrder.setId(order.getId());
         mapOrder.setUser(UserEntity.fromDomainUser(order.getUser()));
         mapOrder.setSubmittedDate(order.getSubmittedDate());
         mapOrder.setDeadlineDate(order.getDeadlineDate());
