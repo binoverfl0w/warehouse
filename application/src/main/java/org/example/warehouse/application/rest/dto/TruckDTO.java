@@ -25,9 +25,6 @@ public class TruckDTO {
     @JsonProperty(value = "last_deliverydate", index = 3, access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime lastDeliveryDate;
 
-    @JsonProperty(value = "available", index = 4, access = JsonProperty.Access.READ_ONLY)
-    private boolean available;
-
     public Truck toDomainTruck() {
         return new Truck(
                 id,
@@ -43,7 +40,6 @@ public class TruckDTO {
         mapTruck.setChassisNumber(truck.getChassisNumber().getValue());
         mapTruck.setLicensePlate(truck.getLicensePlate().getValue());
         mapTruck.setLastDeliveryDate(truck.getLastDeliveryDate());
-        mapTruck.setAvailable(truck.isAvailable());
         return mapTruck;
     }
 }

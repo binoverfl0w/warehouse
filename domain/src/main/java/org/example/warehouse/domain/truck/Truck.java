@@ -29,11 +29,7 @@ public class Truck extends DomainModel {
         if (licensePlate == null) throw new IllegalArgumentException("License plate is required");
     }
 
-    public boolean isAvailable() {
-        return lastDeliveryDate == null || LocalDateTime.now().getDayOfYear() != lastDeliveryDate.getDayOfYear();
-    }
-
     public boolean isAvailableAtDate(LocalDateTime schedule) {
-        return isAvailable() && !schedule.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+        return (lastDeliveryDate == null || schedule.getDayOfYear() != lastDeliveryDate.getDayOfYear()) && !schedule.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 }
