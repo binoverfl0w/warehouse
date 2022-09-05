@@ -39,7 +39,9 @@ public class Order extends DomainModel {
         if (orderItems == null || orderItems.isEmpty()) throw new IllegalArgumentException("Items are required");
         orderItems.forEach(o -> {
             if (o.getRequestedQuantity().getValue() > o.getItem().getQuantity().getValue()) {
-                throw new IllegalArgumentException("Required quantity cannot be greater than the available quantity");
+                // Perform this check when client submits his order
+                if (status.getValue().equals(Status.VALUES.AWAITING_APPROVAL.name()))
+                    throw new IllegalArgumentException("Required quantity cannot be greater than the available quantity");
             }
         });
     }
