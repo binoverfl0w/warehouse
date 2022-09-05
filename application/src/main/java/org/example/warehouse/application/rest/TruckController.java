@@ -43,4 +43,10 @@ public class TruckController {
     public ResponseEntity<Object> createTruck(@RequestBody TruckDTO truckDTO) {
         return ResponseEntity.ok(TruckDTO.fromDomainTruck(truckService.createTruck(truckDTO.toDomainTruck())));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updateTruck(@PathVariable Long id, @RequestBody TruckDTO truckDTO) {
+        truckDTO.setId(id);
+        return ResponseEntity.ok(TruckDTO.fromDomainTruck(truckService.updateTruck(truckDTO.toDomainTruck())));
+    }
 }
