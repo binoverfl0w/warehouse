@@ -84,4 +84,15 @@ public class OrderService extends DomainService {
             orderStore.save(toCancel);
         } else throw new OrderNotModifiableException("Order cannot be modified");
     }
+
+    public void submitOrder(Long id) {
+        if (!hasRole("CLIENT")) throw new AccessDeniedException();
+        Order toSubmit = orderStore.findByIdAndUserId(id, getAuthenticatedUser().getId()).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
+        if (toSubmit.getStatus().getValue().equals(Status.VALUES.CREATED.name())
+            || toSubmit.getStatus().getValue().equals(Status.VALUES.DECLINED.name())) {
+            toSubmit.setStatus(new Status(Status.VALUES.AWAITING_APPROVAL));
+            toSubmit.isValid();
+            orderStore.save(toSubmit);
+        } else throw new OrderNotModifiableException("Order cannot be modified");
+    }
 }
