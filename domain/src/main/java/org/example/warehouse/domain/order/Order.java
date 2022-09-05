@@ -18,15 +18,17 @@ public class Order extends DomainModel {
     private LocalDateTime deadlineDate;
     private Status status;
     private String reason;
+    private LocalDateTime deliveryDate;
     private Set<OrderItem> orderItems;
 
-    public Order(Long id, User user, LocalDateTime submittedDate, LocalDateTime deadlineDate, Status status, String reason, Set<OrderItem> orderItems) {
+    public Order(Long id, User user, LocalDateTime submittedDate, LocalDateTime deadlineDate, Status status, String reason, LocalDateTime deliveryDate, Set<OrderItem> orderItems) {
         super(id);
         this.user = user;
         this.submittedDate = submittedDate;
         this.deadlineDate = deadlineDate;
         this.status = status;
         this.reason = reason;
+        this.deliveryDate = deliveryDate;
         this.orderItems = orderItems;
     }
 

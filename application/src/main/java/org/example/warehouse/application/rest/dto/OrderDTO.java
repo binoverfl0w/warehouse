@@ -32,7 +32,10 @@ public class OrderDTO {
     @JsonProperty(value = "reason", index = 5)
     private String reason;
 
-    @JsonProperty(value = "items", index = 6)
+    @JsonProperty(value = "delivery_date", index = 6, access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime deliveryDate;
+
+    @JsonProperty(value = "items", index = 7)
     private Set<OrderItemDTO> orderItems;
 
     public Order toDomainOrder() {
@@ -43,6 +46,7 @@ public class OrderDTO {
                 deadlineDate == null ? null : deadlineDate,
                 status == null ? null : new Status(status),
                 reason,
+                deliveryDate,
                 orderItems == null ? null : orderItems.stream().map(OrderItemDTO::toDomainOrderItem).collect(Collectors.toSet())
         );
     }
@@ -55,6 +59,7 @@ public class OrderDTO {
         mapOrder.setDeadlineDate(order.getDeadlineDate());
         mapOrder.setStatus(order.getStatus().getValue());
         mapOrder.setReason(order.getReason());
+        mapOrder.setDeliveryDate(order.getDeliveryDate());
         mapOrder.setOrderItems(order.getOrderItems().stream().map(OrderItemDTO::fromDomainOrderItem).collect(Collectors.toSet()));
         return mapOrder;
     }

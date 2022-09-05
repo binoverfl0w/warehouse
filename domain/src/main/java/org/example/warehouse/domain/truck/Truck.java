@@ -6,7 +6,7 @@ import org.example.warehouse.domain.DomainModel;
 import org.example.warehouse.domain.vo.ChassisNumber;
 import org.example.warehouse.domain.vo.LicensePlate;
 
-import java.time.Duration;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 @Getter
@@ -31,5 +31,9 @@ public class Truck extends DomainModel {
 
     public boolean isAvailable() {
         return lastDeliveryDate == null || LocalDateTime.now().getDayOfYear() != lastDeliveryDate.getDayOfYear();
+    }
+
+    public boolean isAvailableAtDate(LocalDateTime schedule) {
+        return isAvailable() && !schedule.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 }
