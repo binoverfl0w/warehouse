@@ -14,6 +14,9 @@ import org.example.warehouse.infrastructure.store.OrderStore;
 import org.example.warehouse.infrastructure.store.TruckStore;
 import org.example.warehouse.infrastructure.store.UserStore;
 import org.example.warehouse.service.*;
+import org.springdoc.core.SpringDocConfigProperties;
+import org.springdoc.core.SpringDocConfiguration;
+import org.springdoc.core.providers.ObjectMapperProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -70,5 +73,19 @@ public class AppConfig {
     @Bean
     public DeliveryService deliveryService(TruckService truckService, OrderService orderService, ItemService itemService) {
         return new DeliveryService(truckService, orderService, itemService);
+    }
+
+    @Bean
+    SpringDocConfiguration springDocConfiguration(){
+        return new SpringDocConfiguration();
+    }
+    @Bean
+    SpringDocConfigProperties springDocConfigProperties() {
+        return new SpringDocConfigProperties();
+    }
+
+    @Bean
+    ObjectMapperProvider objectMapperProvider(SpringDocConfigProperties springDocConfigProperties){
+        return new ObjectMapperProvider(springDocConfigProperties);
     }
 }
