@@ -5,16 +5,16 @@ import org.example.warehouse.application.CombinedInterface;
 import org.example.warehouse.domain.IAuthenticationFacade;
 import org.example.warehouse.domain.item.IItemStore;
 import org.example.warehouse.domain.order.IOrderStore;
+import org.example.warehouse.domain.truck.ITruckStore;
 import org.example.warehouse.domain.user.IUserStore;
-import org.example.warehouse.infrastructure.repository.ItemRepository;
-import org.example.warehouse.infrastructure.repository.OrderRepository;
-import org.example.warehouse.infrastructure.repository.RoleRepository;
-import org.example.warehouse.infrastructure.repository.UserRepository;
+import org.example.warehouse.infrastructure.repository.*;
 import org.example.warehouse.infrastructure.store.ItemStore;
 import org.example.warehouse.infrastructure.store.OrderStore;
+import org.example.warehouse.infrastructure.store.TruckStore;
 import org.example.warehouse.infrastructure.store.UserStore;
 import org.example.warehouse.service.ItemService;
 import org.example.warehouse.service.OrderService;
+import org.example.warehouse.service.TruckService;
 import org.example.warehouse.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,5 +54,15 @@ public class AppConfig {
     @Bean
     public OrderService orderService(IOrderStore orderStore) {
         return new OrderService(orderStore);
+    }
+
+    @Bean
+    public ITruckStore truckStore(TruckRepository truckRepository) {
+        return new TruckStore(truckRepository);
+    }
+
+    @Bean
+    public TruckService truckService(ITruckStore truckStore) {
+        return new TruckService(truckStore);
     }
 }
