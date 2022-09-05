@@ -4,6 +4,7 @@ import org.example.warehouse.domain.DomainService;
 import org.example.warehouse.domain.order.IOrderStore;
 import org.example.warehouse.domain.order.Order;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.domain.vo.Quantity;
 import org.example.warehouse.domain.vo.Status;
 import org.example.warehouse.service.exception.AccessDeniedException;
 import org.example.warehouse.service.exception.OrderNotFoundException;
@@ -104,10 +105,19 @@ public class OrderService extends DomainService {
                     toUpdate.setStatus(status);
                     toUpdate.setReason(reason);
                 } else throw new OrderNotModifiableException("Order cannot be modified");
-            } else throw new AccessDeniedException();
+            }
+            else throw new AccessDeniedException();
             toUpdate.isValid();
             orderStore.save(toUpdate);
         } else
             throw new AccessDeniedException();
+    }
+
+    public void setForDelivery(Set<Order> orders, LocalDateTime deliveryDate) {
+        for (Order order : orders) {
+            order.setStatus(new Status(Status.VALUES.UNDER_DELIVERY));
+            order.setDeliveryDate(deliveryDate);
+            orderStore.save(order);
+        }
     }
 }

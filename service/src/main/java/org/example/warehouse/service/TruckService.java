@@ -8,6 +8,7 @@ import org.example.warehouse.service.exception.AccessDeniedException;
 import org.example.warehouse.service.exception.TruckAlreadyExistsException;
 import org.example.warehouse.service.exception.TruckNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,5 +58,12 @@ public class TruckService extends DomainService {
         if (!hasRole("WAREHOUSE_MANAGER")) throw new AccessDeniedException();
         truckStore.findById(id).orElseThrow(() -> new TruckNotFoundException("id", id.toString()));
         truckStore.deleteById(id);
+    }
+
+    public void setForDelivery(Set<Truck> trucks, LocalDateTime deliveryDate) {
+        for (Truck truck : trucks) {
+            truck.setLastDeliveryDate(deliveryDate);
+            truckStore.save(truck);
+        }
     }
 }

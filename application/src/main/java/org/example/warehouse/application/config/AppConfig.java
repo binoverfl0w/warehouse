@@ -12,10 +12,7 @@ import org.example.warehouse.infrastructure.store.ItemStore;
 import org.example.warehouse.infrastructure.store.OrderStore;
 import org.example.warehouse.infrastructure.store.TruckStore;
 import org.example.warehouse.infrastructure.store.UserStore;
-import org.example.warehouse.service.ItemService;
-import org.example.warehouse.service.OrderService;
-import org.example.warehouse.service.TruckService;
-import org.example.warehouse.service.UserService;
+import org.example.warehouse.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -64,5 +61,10 @@ public class AppConfig {
     @Bean
     public TruckService truckService(ITruckStore truckStore) {
         return new TruckService(truckStore);
+    }
+
+    @Bean
+    public DeliveryService deliveryService(TruckService truckService, OrderService orderService, ItemService itemService) {
+        return new DeliveryService(truckService, orderService, itemService);
     }
 }

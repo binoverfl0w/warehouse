@@ -3,9 +3,13 @@ package org.example.warehouse.service;
 import org.example.warehouse.domain.DomainService;
 import org.example.warehouse.domain.item.IItemStore;
 import org.example.warehouse.domain.item.Item;
+import org.example.warehouse.domain.order.Order;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.domain.vo.Quantity;
 import org.example.warehouse.service.exception.AccessDeniedException;
 import org.example.warehouse.service.exception.ItemNotFoundException;
+
+import java.util.Set;
 
 public class ItemService extends DomainService {
     private IItemStore itemStore;
@@ -44,5 +48,14 @@ public class ItemService extends DomainService {
         if (!hasRole("WAREHOUSE_MANAGER")) throw new AccessDeniedException();
         itemStore.findById(id).orElseThrow(() -> new ItemNotFoundException("id", id.toString()));
         itemStore.deleteById(id);
+    }
+
+    public void recalculateItemQuantities(Set<Order> orders) {
+        orders.forEach(order -> {
+            order.getOrderItems().forEach(orderItem -> {
+                orderItem.getItem().setQuantity(new Quantity(orderItem.getItem().getQuantity().getValue() - orderItem.getRequestedQuantity().getValue()));
+                itemStore.save(orderItem.getItem());
+            });
+        });
     }
 }
