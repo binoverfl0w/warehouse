@@ -38,4 +38,9 @@ public class TruckController {
     public ResponseEntity<Object> getTruck(@PathVariable Long id) {
         return ResponseEntity.ok(TruckDTO.fromDomainTruck(truckService.getTruck(id)));
     }
+
+    @PostMapping
+    public ResponseEntity<Object> createTruck(@RequestBody TruckDTO truckDTO) {
+        return ResponseEntity.ok(TruckDTO.fromDomainTruck(truckService.createTruck(truckDTO.toDomainTruck())));
+    }
 }
