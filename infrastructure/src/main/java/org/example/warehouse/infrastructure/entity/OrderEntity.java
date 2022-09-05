@@ -8,6 +8,7 @@ import org.example.warehouse.domain.vo.Status;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -34,8 +35,8 @@ public class OrderEntity {
     @Column(name = "STATUS", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "pk.orderEntity", cascade = CascadeType.ALL)
-    private List<OrderItemEntity> orderItems;
+    @OneToMany(mappedBy = "pk.orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderItemEntity> orderItems;
 
     public Order toDomainOrder() {
         return new Order(
@@ -54,7 +55,7 @@ public class OrderEntity {
         mapOrder.setSubmittedDate(order.getSubmittedDate());
         mapOrder.setDeadlineDate(order.getDeadlineDate());
         mapOrder.setStatus(order.getStatus().getValue());
-        mapOrder.setOrderItems(order.getOrderItems().stream().map(OrderItemEntity::fromDomainOrderItem).collect(Collectors.toList()));
+        mapOrder.setOrderItems(order.getOrderItems().stream().map(OrderItemEntity::fromDomainOrderItem).collect(Collectors.toSet()));
         return mapOrder;
     }
 }

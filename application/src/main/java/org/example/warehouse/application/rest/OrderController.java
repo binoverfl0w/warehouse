@@ -59,5 +59,13 @@ public class OrderController {
         order.getOrderItems().forEach(orderItem -> orderItem.setItem(itemService.getItem(orderItem.getItem().getId())));
         return ResponseEntity.ok(OrderDTO.fromDomainOrder(orderService.createOrder(order)));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) {
+        orderDTO.setId(id);
+        Order order = orderDTO.toDomainOrder();
+        order.getOrderItems().forEach(orderItem -> orderItem.setItem(itemService.getItem(orderItem.getItem().getId())));
+        return ResponseEntity.ok(OrderDTO.fromDomainOrder(orderService.updateOrder(order)));
+    }
 }
 

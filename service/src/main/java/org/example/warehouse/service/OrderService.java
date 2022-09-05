@@ -7,6 +7,7 @@ import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.domain.vo.Status;
 import org.example.warehouse.service.exception.AccessDeniedException;
 import org.example.warehouse.service.exception.OrderNotFoundException;
+import org.example.warehouse.service.exception.OrderNotModifiableException;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -54,5 +55,21 @@ public class OrderService extends DomainService {
         order.setUser(getAuthenticatedUser());
         order.isValid();
         return orderStore.save(order);
+    }
+
+    public Order updateOrder(Order order) {
+        Order toUpdate;
+        if (hasRole("CLIENT")) {
+            toUpdate = orderStore.findByIdAndUserId(order.getId(), getAuthenticatedUser().getId()).orElseThrow(() -> new OrderNotFoundException("id", order.getId().toString()));
+            if (toUpdate.getStatus().getValue().equals(Status.VALUES.CREATED.name()) ||
+                toUpdate.getStatus().getValue().equals(Status.VALUES.DECLINED.name())) {
+                if (order.getOrderItems() != null) toUpdate.setOrderItems(order.getOrderItems());
+                toUpdate.isValid();
+                orderStore.save(toUpdate);
+            } else
+                throw new OrderNotModifiableException("Order cannot be modified");
+            return toUpdate;
+        }
+        throw new AccessDeniedException();
     }
 }
