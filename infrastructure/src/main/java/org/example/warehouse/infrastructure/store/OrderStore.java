@@ -79,17 +79,8 @@ public class OrderStore implements IOrderStore {
 
     @Override
     public Order save(Order order) {
-        OrderEntity orderEntity = order.getId() == null ? null : orderRepository.findById(order.getId()).orElse(null);
-        if (orderEntity == null) {
-            orderEntity = new OrderEntity();
-            orderEntity.setId(order.getId());
-            orderEntity.setUser(UserEntity.fromDomainUser(order.getUser()));
-            orderEntity.setSubmittedDate(order.getSubmittedDate());
-            orderEntity.setDeadlineDate(order.getDeadlineDate());
-            orderEntity.setStatus(order.getStatus().getValue());
-        }
-        if (orderEntity.getOrderItems() != null) orderEntity.getOrderItems().clear();
-        else orderEntity.setOrderItems(new HashSet<>());
+        OrderEntity orderEntity = OrderEntity.fromDomainOrder(order);
+        orderEntity.setOrderItems(new HashSet<>());
         for (OrderItem orderItem : order.getOrderItems()) {
             OrderItemEntity orderItemEntity = OrderItemEntity.fromDomainOrderItem(orderItem);
             orderItemEntity.setOrderEntity(orderEntity);
