@@ -2,7 +2,7 @@ package org.example.warehouse.domain.vo;
 
 import java.util.Arrays;
 
-public class Status {
+public final class Status {
     private String value;
     public enum VALUES {
         CREATED,

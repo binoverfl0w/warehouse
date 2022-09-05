@@ -2,7 +2,7 @@ package org.example.warehouse.domain.vo;
 
 import java.math.BigDecimal;
 
-public class UnitPrice {
+public final class UnitPrice {
     private BigDecimal value;
 
     public UnitPrice(BigDecimal value) {

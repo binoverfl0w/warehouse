@@ -1,6 +1,6 @@
 package org.example.warehouse.domain.vo;
 
-public class Quantity {
+public final class Quantity {
     private Long value;
 
     public Quantity(Long value) {
