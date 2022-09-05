@@ -7,10 +7,7 @@ import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
@@ -35,5 +32,10 @@ public class TruckController {
         trucksDTO.setTotalPages(trucks.getTotalPages());
         trucksDTO.setCurrentPage(trucks.getCurrentPage());
         return ResponseEntity.ok(trucksDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getTruck(@PathVariable Long id) {
+        return ResponseEntity.ok(TruckDTO.fromDomainTruck(truckService.getTruck(id)));
     }
 }

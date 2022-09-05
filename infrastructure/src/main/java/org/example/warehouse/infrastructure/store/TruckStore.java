@@ -8,6 +8,7 @@ import org.example.warehouse.infrastructure.repository.TruckRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TruckStore implements ITruckStore {
@@ -26,5 +27,10 @@ public class TruckStore implements ITruckStore {
                 truckEntities.getTotalPages(),
                 truckEntities.getNumber()
         );
+    }
+
+    @Override
+    public Optional<Truck> findById(Long id) {
+        return truckRepository.findById(id).map(TruckEntity::toDomainTruck);
     }
 }
