@@ -6,6 +6,7 @@ import org.example.warehouse.domain.truck.Truck;
 import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +49,11 @@ public class TruckController {
     public ResponseEntity<Object> updateTruck(@PathVariable Long id, @RequestBody TruckDTO truckDTO) {
         truckDTO.setId(id);
         return ResponseEntity.ok(TruckDTO.fromDomainTruck(truckService.updateTruck(truckDTO.toDomainTruck())));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteTruck(@PathVariable Long id) {
+        truckService.deleteTruck(id);
+        return new ResponseEntity<>(ResponseEntity.EMPTY, ResponseEntity.EMPTY.getHeaders(), HttpStatus.NO_CONTENT);
     }
 }

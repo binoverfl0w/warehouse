@@ -13,4 +13,6 @@ public interface ITruckStore {
     Truck save(Truck truck);
 
     Set<Truck> findExisting(String chassisNumber, String licensePlate);
+
+    void deleteById(Long id);
 }

@@ -52,4 +52,10 @@ public class TruckService extends DomainService {
         toUpdate.isValid();
         return truckStore.save(toUpdate);
     }
+
+    public void deleteTruck(Long id) {
+        if (!hasRole("WAREHOUSE_MANAGER")) throw new AccessDeniedException();
+        truckStore.findById(id).orElseThrow(() -> new TruckNotFoundException("id", id.toString()));
+        truckStore.deleteById(id);
+    }
 }

@@ -44,4 +44,9 @@ public class TruckStore implements ITruckStore {
     public Set<Truck> findExisting(String chassisNumber, String licensePlate) {
         return truckRepository.findByChassisNumberOrLicensePlate(chassisNumber, licensePlate).stream().map(TruckEntity::toDomainTruck).collect(Collectors.toSet());
     }
+
+    @Override
+    public void deleteById(Long id) {
+        truckRepository.deleteById(id);
+    }
 }
