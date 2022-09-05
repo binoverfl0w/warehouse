@@ -35,6 +35,9 @@ public class OrderEntity {
     @Column(name = "STATUS", nullable = false)
     private String status;
 
+    @Column(name = "REASON")
+    private String reason;
+
     @OneToMany(mappedBy = "pk.orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItemEntity> orderItems;
 
@@ -45,6 +48,7 @@ public class OrderEntity {
                 submittedDate,
                 deadlineDate,
                 new Status(status),
+                reason,
                 orderItems.stream().map(OrderItemEntity::toDomainOrderItem).collect(Collectors.toSet())
         );
     }
@@ -56,6 +60,7 @@ public class OrderEntity {
         mapOrder.setSubmittedDate(order.getSubmittedDate());
         mapOrder.setDeadlineDate(order.getDeadlineDate());
         mapOrder.setStatus(order.getStatus().getValue());
+        mapOrder.setReason(order.getReason());
         mapOrder.setOrderItems(order.getOrderItems().stream().map(OrderItemEntity::fromDomainOrderItem).collect(Collectors.toSet()));
         return mapOrder;
     }

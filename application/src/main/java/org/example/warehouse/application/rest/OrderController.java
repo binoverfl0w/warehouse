@@ -3,18 +3,13 @@ package org.example.warehouse.application.rest;
 import org.example.warehouse.application.rest.dto.OrderBasicDTO;
 import org.example.warehouse.application.rest.dto.OrderDTO;
 import org.example.warehouse.application.rest.dto.PageDTO;
-import org.example.warehouse.application.rest.dto.UserDTO;
 import org.example.warehouse.domain.order.Order;
-import org.example.warehouse.domain.order.OrderItem;
 import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.domain.vo.Status;
 import org.example.warehouse.service.ItemService;
 import org.example.warehouse.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -71,8 +66,8 @@ public class OrderController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Object> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
-        orderService.updateStatus(id, new Status(status));
+    public ResponseEntity<Object> updateOrderStatus(@PathVariable Long id, @RequestParam String status, @RequestBody OrderDTO orderDTO) {
+        orderService.updateStatus(id, new Status(status), orderDTO.getReason());
         return ResponseEntity.ok(null);
     }
 }

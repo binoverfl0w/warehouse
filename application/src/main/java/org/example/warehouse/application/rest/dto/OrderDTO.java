@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.warehouse.domain.order.Order;
-import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.Status;
 
 import java.time.LocalDateTime;
@@ -30,7 +29,10 @@ public class OrderDTO {
     @JsonProperty(value = "status", index = 4)
     private String status;
 
-    @JsonProperty(value = "items", index = 5)
+    @JsonProperty(value = "reason", index = 5)
+    private String reason;
+
+    @JsonProperty(value = "items", index = 6)
     private Set<OrderItemDTO> orderItems;
 
     public Order toDomainOrder() {
@@ -40,6 +42,7 @@ public class OrderDTO {
                 submittedDate == null ? null : submittedDate,
                 deadlineDate == null ? null : deadlineDate,
                 status == null ? null : new Status(status),
+                reason,
                 orderItems == null ? null : orderItems.stream().map(OrderItemDTO::toDomainOrderItem).collect(Collectors.toSet())
         );
     }
@@ -51,6 +54,7 @@ public class OrderDTO {
         mapOrder.setSubmittedDate(order.getSubmittedDate());
         mapOrder.setDeadlineDate(order.getDeadlineDate());
         mapOrder.setStatus(order.getStatus().getValue());
+        mapOrder.setReason(order.getReason());
         mapOrder.setOrderItems(order.getOrderItems().stream().map(OrderItemDTO::fromDomainOrderItem).collect(Collectors.toSet()));
         return mapOrder;
     }

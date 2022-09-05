@@ -48,11 +48,12 @@ public class OrderService extends DomainService {
 
     public Order createOrder(Order order) {
         if (!hasRole("CLIENT")) throw new AccessDeniedException();
+        order.setUser(getAuthenticatedUser());
         order.setSubmittedDate(LocalDateTime.now());
         // Set deadline 30 days after the order is created
         order.setDeadlineDate(LocalDateTime.now().plusDays(30));
         order.setStatus(new Status(Status.VALUES.CREATED));
-        order.setUser(getAuthenticatedUser());
+        order.setReason(null);
         order.isValid();
         return orderStore.save(order);
     }
@@ -73,12 +74,13 @@ public class OrderService extends DomainService {
         throw new AccessDeniedException();
     }
 
-    public void updateStatus(Long id, Status status) {
+    public void updateStatus(Long id, Status status, String reason) {
         if (hasRole("CLIENT")) {
             Order toUpdate = orderStore.findByIdAndUserId(id, getAuthenticatedUser().getId()).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
             if (status.getValue().equals(Status.VALUES.AWAITING_APPROVAL.name())) {
                 if (toUpdate.getStatus().getValue().equals(Status.VALUES.CREATED.name())
                     || toUpdate.getStatus().getValue().equals(Status.VALUES.DECLINED.name())) {
+                    toUpdate.setReason(null);
                     toUpdate.setStatus(status);
                 } else throw new OrderNotModifiableException("Order cannot be modified");
             } else if (status.getValue().equals(Status.VALUES.CANCELLED.name())) {
@@ -94,11 +96,13 @@ public class OrderService extends DomainService {
             Order toUpdate = orderStore.findById(id).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
             if (status.getValue().equals(Status.VALUES.APPROVED.name())) {
                 if (toUpdate.getStatus().getValue().equals(Status.VALUES.AWAITING_APPROVAL.name())) {
+                    toUpdate.setReason(null);
                     toUpdate.setStatus(status);
                 } else throw new OrderNotModifiableException("Order cannot be modified");
             } else if (status.getValue().equals(Status.VALUES.DECLINED.name())) {
                 if (toUpdate.getStatus().getValue().equals(Status.VALUES.AWAITING_APPROVAL.name())) {
                     toUpdate.setStatus(status);
+                    toUpdate.setReason(reason);
                 } else throw new OrderNotModifiableException("Order cannot be modified");
             } else throw new AccessDeniedException();
             toUpdate.isValid();
