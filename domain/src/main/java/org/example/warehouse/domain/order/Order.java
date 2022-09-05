@@ -33,5 +33,10 @@ public class Order extends DomainModel {
         if (status == null) throw new IllegalArgumentException("Status is required");
         if (submittedDate == null) throw new IllegalArgumentException("Submitted date is required");
         if (orderItems == null) throw new IllegalArgumentException("Items are required");
+        orderItems.forEach(o -> {
+            if (o.getRequestedQuantity().getValue() > o.getItem().getQuantity().getValue()) {
+                throw new IllegalArgumentException("Required quantity cannot be greater than the available quantity");
+            }
+        });
     }
 }

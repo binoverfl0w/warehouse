@@ -2,15 +2,18 @@ package org.example.warehouse.infrastructure.store;
 
 import org.example.warehouse.domain.order.IOrderStore;
 import org.example.warehouse.domain.order.Order;
+import org.example.warehouse.domain.order.OrderItem;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.infrastructure.entity.ItemEntity;
 import org.example.warehouse.infrastructure.entity.OrderEntity;
+import org.example.warehouse.infrastructure.entity.OrderItemEntity;
+import org.example.warehouse.infrastructure.entity.UserEntity;
 import org.example.warehouse.infrastructure.repository.OrderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderStore implements IOrderStore {
@@ -72,5 +75,23 @@ public class OrderStore implements IOrderStore {
     @Override
     public Optional<Order> findByIdAndUserId(Long id, Long userId) {
         return orderRepository.findByIdAndUserId(id, userId).map(OrderEntity::toDomainOrder);
+    }
+
+    @Override
+    public Order save(Order order) {
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setId(order.getId());
+        orderEntity.setUser(UserEntity.fromDomainUser(order.getUser()));
+        orderEntity.setSubmittedDate(order.getSubmittedDate());
+        orderEntity.setDeadlineDate(order.getDeadlineDate());
+        orderEntity.setStatus(order.getStatus().getValue());
+        List<OrderItemEntity> orderItemEntities = new ArrayList<>();
+        for (OrderItem orderItem : order.getOrderItems()) {
+            OrderItemEntity orderItemEntity = OrderItemEntity.fromDomainOrderItem(orderItem);
+            orderItemEntity.setOrderEntity(orderEntity);
+            orderItemEntities.add(orderItemEntity);
+        }
+        orderEntity.setOrderItems(orderItemEntities);
+        return orderRepository.save(orderEntity).toDomainOrder();
     }
 }

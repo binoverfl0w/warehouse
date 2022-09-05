@@ -34,7 +34,7 @@ public class OrderEntity {
     @Column(name = "STATUS", nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "pk.orderEntity")
+    @OneToMany(mappedBy = "pk.orderEntity", cascade = CascadeType.ALL)
     private List<OrderItemEntity> orderItems;
 
     public Order toDomainOrder() {

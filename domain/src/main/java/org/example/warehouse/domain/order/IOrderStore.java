@@ -1,5 +1,6 @@
 package org.example.warehouse.domain.order;
 
+import org.aspectj.weaver.ast.Or;
 import org.example.warehouse.domain.vo.PageVO;
 
 import java.util.Optional;
@@ -17,4 +18,6 @@ public interface IOrderStore {
     Optional<Order> findById(Long id);
 
     Optional<Order> findByIdAndUserId(Long id, Long userId);
+
+    Order save(Order order);
 }
