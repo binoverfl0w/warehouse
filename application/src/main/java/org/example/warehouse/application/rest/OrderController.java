@@ -7,6 +7,7 @@ import org.example.warehouse.application.rest.dto.UserDTO;
 import org.example.warehouse.domain.order.Order;
 import org.example.warehouse.domain.order.OrderItem;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.domain.vo.Status;
 import org.example.warehouse.service.ItemService;
 import org.example.warehouse.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,15 +70,9 @@ public class OrderController {
         return ResponseEntity.ok(OrderDTO.fromDomainOrder(orderService.updateOrder(order)));
     }
 
-    @PostMapping("/{id}/cancel")
-    public ResponseEntity<Object> cancelOrder(@PathVariable Long id) {
-        orderService.cancelOrder(id);
-        return ResponseEntity.ok(null);
-    }
-
-    @PostMapping("/{id}/submit")
-    public ResponseEntity<Object> submitOrder(@PathVariable Long id) {
-        orderService.submitOrder(id);
+    @PostMapping("/{id}")
+    public ResponseEntity<Object> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
+        orderService.updateStatus(id, new Status(status));
         return ResponseEntity.ok(null);
     }
 }

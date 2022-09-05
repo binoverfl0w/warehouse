@@ -73,26 +73,37 @@ public class OrderService extends DomainService {
         throw new AccessDeniedException();
     }
 
-    public void cancelOrder(Long id) {
-        if (!hasRole("CLIENT")) throw new AccessDeniedException();
-        Order toCancel = orderStore.findByIdAndUserId(id, getAuthenticatedUser().getId()).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
-        if (!toCancel.getStatus().getValue().equals(Status.VALUES.FULFILLED.name())
-            && !toCancel.getStatus().getValue().equals(Status.VALUES.UNDER_DELIVERY.name())
-            && !toCancel.getStatus().getValue().equals(Status.VALUES.CANCELLED.name())) {
-            toCancel.setStatus(new Status(Status.VALUES.CANCELLED));
-            toCancel.isValid();
-            orderStore.save(toCancel);
-        } else throw new OrderNotModifiableException("Order cannot be modified");
-    }
-
-    public void submitOrder(Long id) {
-        if (!hasRole("CLIENT")) throw new AccessDeniedException();
-        Order toSubmit = orderStore.findByIdAndUserId(id, getAuthenticatedUser().getId()).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
-        if (toSubmit.getStatus().getValue().equals(Status.VALUES.CREATED.name())
-            || toSubmit.getStatus().getValue().equals(Status.VALUES.DECLINED.name())) {
-            toSubmit.setStatus(new Status(Status.VALUES.AWAITING_APPROVAL));
-            toSubmit.isValid();
-            orderStore.save(toSubmit);
-        } else throw new OrderNotModifiableException("Order cannot be modified");
+    public void updateStatus(Long id, Status status) {
+        if (hasRole("CLIENT")) {
+            Order toUpdate = orderStore.findByIdAndUserId(id, getAuthenticatedUser().getId()).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
+            if (status.getValue().equals(Status.VALUES.AWAITING_APPROVAL.name())) {
+                if (toUpdate.getStatus().getValue().equals(Status.VALUES.CREATED.name())
+                    || toUpdate.getStatus().getValue().equals(Status.VALUES.DECLINED.name())) {
+                    toUpdate.setStatus(status);
+                } else throw new OrderNotModifiableException("Order cannot be modified");
+            } else if (status.getValue().equals(Status.VALUES.CANCELLED.name())) {
+                if (!toUpdate.getStatus().getValue().equals(Status.VALUES.FULFILLED.name())
+                        && !toUpdate.getStatus().getValue().equals(Status.VALUES.UNDER_DELIVERY.name())
+                        && !toUpdate.getStatus().getValue().equals(Status.VALUES.CANCELLED.name())) {
+                    toUpdate.setStatus(status);
+                } else throw new OrderNotModifiableException("Order cannot be modified");
+            } else throw new AccessDeniedException();
+            toUpdate.isValid();
+            orderStore.save(toUpdate);
+        } else if (hasRole("WAREHOUSE_MANAGER")) {
+            Order toUpdate = orderStore.findById(id).orElseThrow(() -> new OrderNotFoundException("id", id.toString()));
+            if (status.getValue().equals(Status.VALUES.APPROVED.name())) {
+                if (toUpdate.getStatus().getValue().equals(Status.VALUES.AWAITING_APPROVAL.name())) {
+                    toUpdate.setStatus(status);
+                } else throw new OrderNotModifiableException("Order cannot be modified");
+            } else if (status.getValue().equals(Status.VALUES.DECLINED.name())) {
+                if (toUpdate.getStatus().getValue().equals(Status.VALUES.AWAITING_APPROVAL.name())) {
+                    toUpdate.setStatus(status);
+                } else throw new OrderNotModifiableException("Order cannot be modified");
+            } else throw new AccessDeniedException();
+            toUpdate.isValid();
+            orderStore.save(toUpdate);
+        } else
+            throw new AccessDeniedException();
     }
 }
