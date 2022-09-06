@@ -70,7 +70,7 @@ public class SecurityConfiguration {
                 // Everyone can create an account
                 .mvcMatchers(HttpMethod.POST,"/users").permitAll()
                 // Everyone can see the items available
-                .mvcMatchers(HttpMethod.GET, "/items").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/items/**").permitAll()
                 // Other resources require the user to be authenticated
                 .mvcMatchers("/**").authenticated()
         );

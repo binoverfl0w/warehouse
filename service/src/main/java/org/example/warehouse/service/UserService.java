@@ -31,11 +31,14 @@ public class UserService extends DomainService {
     }
 
     public User createUser(User user) {
-        if (!hasRole("SYSTEM_ADMIN")) throw new AccessDeniedException();
-        user.setRole(userStore.findRoleByName(user.getRole().getName().getValue()).orElseThrow(() -> new RoleNotFoundException("name", user.getRole().getName().getValue())));
+        if (hasRole("SYSTEM_ADMIN")) {
+            user.setRole(userStore.findRoleByName(user.getRole().getName().getValue()).orElseThrow(() -> new RoleNotFoundException("name", user.getRole().getName().getValue())));
+        } else {
+            user.setRole(userStore.findRoleByName("CLIENT").orElseThrow(() -> new RoleNotFoundException("name", "CLIENT")));
+        }
         user.isValid();
         userStore.findByUsername(user.getUsername().getValue()).ifPresent((presentUser) -> {throw new UserAlreadyExistsException("A user with this username already exists");});
-        userStore.findByEmail(user.getUsername().getValue()).ifPresent((presentUser) -> {throw new UserAlreadyExistsException("A user with this email already exists");});
+        userStore.findByEmail(user.getEmailAddress().getValue()).ifPresent((presentUser) -> {throw new UserAlreadyExistsException("A user with this email already exists");});
         return userStore.save(user);
     }
 

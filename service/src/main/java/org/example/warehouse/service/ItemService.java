@@ -19,12 +19,10 @@ public class ItemService extends DomainService {
     }
 
     public PageVO<Item> getItemPage(int page, int size) {
-        if (!hasRole("WAREHOUSE_MANAGER") && !hasRole("CLIENT")) throw new AccessDeniedException();
         return itemStore.getItemPage(page, size);
     }
 
     public Item getItem(Long id) {
-        if (!hasRole("WAREHOUSE_MANAGER") && !hasRole("CLIENT")) throw new AccessDeniedException();
         return itemStore.findById(id).orElseThrow(() -> new ItemNotFoundException("id", id.toString()));
     }
 
