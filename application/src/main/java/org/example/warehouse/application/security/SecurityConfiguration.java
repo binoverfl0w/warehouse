@@ -1,8 +1,10 @@
 package org.example.warehouse.application.security;
 
+import org.example.warehouse.application.rest.RestAuthenticationEntryPoint;
 import org.example.warehouse.application.security.jwt.JWTTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -27,11 +29,13 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfiguration {
     private final UserDetailsService userService;
     private final JWTTokenFilter jwtTokenFilter;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Autowired
-    public SecurityConfiguration(UserDetailsService userService, JWTTokenFilter jwtTokenFilter) {
+    public SecurityConfiguration(UserDetailsService userService, JWTTokenFilter jwtTokenFilter, RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
         this.userService = userService;
         this.jwtTokenFilter = jwtTokenFilter;
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
     }
 
     @Bean
@@ -55,10 +59,21 @@ public class SecurityConfiguration {
 
         http = http
                 .exceptionHandling()
-//                .authenticationEntryPoint()
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and();
 
-        http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+        http.authorizeHttpRequests(authorize -> authorize
+                // Everyone can see the API documentation
+                .mvcMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
+                // Everyone can try to log in
+                .mvcMatchers(HttpMethod.POST,"/users/login").permitAll()
+                // Everyone can create an account
+                .mvcMatchers(HttpMethod.POST,"/users").permitAll()
+                // Everyone can see the items available
+                .mvcMatchers(HttpMethod.GET, "/items").permitAll()
+                // Other resources require the user to be authenticated
+                .mvcMatchers("/**").authenticated()
+        );
 
         http.addFilterBefore(
                 jwtTokenFilter,
