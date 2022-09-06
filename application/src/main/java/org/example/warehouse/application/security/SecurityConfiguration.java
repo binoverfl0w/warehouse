@@ -64,7 +64,9 @@ public class SecurityConfiguration {
 
         http.authorizeHttpRequests(authorize -> authorize
                 // Everyone can see the API documentation
-                .mvcMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
+                .mvcMatchers("/swagger-ui/**").permitAll()
+                .mvcMatchers("/v3/api-docs/**").permitAll()
+                .mvcMatchers("/api-docs.yaml").permitAll()
                 // Everyone can try to log in
                 .mvcMatchers(HttpMethod.POST,"/users/login").permitAll()
                 // Everyone can create an account
