@@ -8,6 +8,7 @@ import org.example.warehouse.domain.vo.LicensePlate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,15 +27,17 @@ public class TruckEntity {
     @Column(name = "LICENSE_PLATE", nullable = false, unique = true)
     private String licensePlate;
 
-    @Column(name = "LAST_DELIVERYDATE")
-    private LocalDateTime lastDeliveryDate;
+    @ElementCollection
+    @CollectionTable(name = "truck_date")
+    @JoinColumn(name = "TRUCK_ID")
+    private Set<LocalDateTime> deliveryDates;
 
     public Truck toDomainTruck() {
         return new Truck(
                 id,
                 new ChassisNumber(chassisNumber),
                 new LicensePlate(licensePlate),
-                lastDeliveryDate
+                deliveryDates
         );
     }
 
@@ -43,7 +46,7 @@ public class TruckEntity {
         mapTruck.setId(truck.getId());
         mapTruck.setChassisNumber(truck.getChassisNumber().getValue());
         mapTruck.setLicensePlate(truck.getLicensePlate().getValue());
-        mapTruck.setLastDeliveryDate(truck.getLastDeliveryDate());
+        mapTruck.setDeliveryDates(truck.getDeliveryDates());
         return mapTruck;
     }
 }

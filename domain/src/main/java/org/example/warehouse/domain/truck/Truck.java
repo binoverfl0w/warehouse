@@ -8,6 +8,7 @@ import org.example.warehouse.domain.vo.LicensePlate;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,13 +16,13 @@ import java.time.LocalDateTime;
 public class Truck extends DomainModel {
     private ChassisNumber chassisNumber;
     private LicensePlate licensePlate;
-    private LocalDateTime lastDeliveryDate;
+    private Set<LocalDateTime> deliveryDates;
 
-    public Truck(Long id, ChassisNumber chassisNumber, LicensePlate licensePlate, LocalDateTime lastDeliveryDate) {
+    public Truck(Long id, ChassisNumber chassisNumber, LicensePlate licensePlate, Set<LocalDateTime> deliveryDates) {
         super(id);
         this.chassisNumber = chassisNumber;
         this.licensePlate = licensePlate;
-        this.lastDeliveryDate = lastDeliveryDate;
+        this.deliveryDates = deliveryDates;
     }
 
     public void isValid() {
@@ -30,6 +31,10 @@ public class Truck extends DomainModel {
     }
 
     public boolean isAvailableAtDate(LocalDateTime schedule) {
-        return (lastDeliveryDate == null || schedule.getDayOfYear() != lastDeliveryDate.getDayOfYear()) && !schedule.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+        boolean[] available = {true};
+        deliveryDates.forEach(deliveryDate -> {
+            if (deliveryDate.getDayOfYear() == schedule.getDayOfYear()) available[0] = false;
+        });
+        return available[0] && !schedule.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 }

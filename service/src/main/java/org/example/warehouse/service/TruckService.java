@@ -62,7 +62,7 @@ public class TruckService extends DomainService {
 
     public void setForDelivery(Set<Truck> trucks, LocalDateTime deliveryDate) {
         for (Truck truck : trucks) {
-            truck.setLastDeliveryDate(deliveryDate);
+            truck.getDeliveryDates().add(deliveryDate);
             truckStore.save(truck);
         }
     }
