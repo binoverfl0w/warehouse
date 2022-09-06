@@ -66,8 +66,8 @@ public class OrderController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Object> updateOrderStatus(@PathVariable Long id, @RequestParam String status, @RequestBody OrderDTO orderDTO) {
-        orderService.updateStatus(id, new Status(status), orderDTO.getReason());
+    public ResponseEntity<Object> updateOrderStatus(@PathVariable Long id, @RequestParam String status, @RequestBody(required = false) OrderDTO orderDTO) {
+        orderService.updateStatus(id, new Status(status), orderDTO == null ? null : orderDTO.getReason());
         return ResponseEntity.ok(null);
     }
 }
