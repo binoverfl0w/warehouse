@@ -98,6 +98,7 @@ public class UserController {
                 ", password = " + userDTO.getPassword() +
                 ", role = " + userDTO.getRole());
         userDTO.setId(id);
+        if (userDTO.getPassword() != null) userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return ResponseEntity.ok(UserDTO.fromDomainUser(userService.updateUser(userDTO.toDomainUser())));
     }
 

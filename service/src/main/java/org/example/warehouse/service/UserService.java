@@ -11,6 +11,7 @@ import org.example.warehouse.service.exception.UserAlreadyExistsException;
 import org.example.warehouse.service.exception.UserNotFoundException;
 
 import java.util.List;
+import java.util.Objects;
 
 public class UserService extends DomainService {
     private IUserStore userStore;
@@ -47,11 +48,17 @@ public class UserService extends DomainService {
         User toUpdate = userStore.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("id", user.getId().toString()));
         if (user.getFullname() != null) toUpdate.setFullname(user.getFullname());
         if (user.getUsername() != null) {
-            userStore.findByUsername(user.getUsername().getValue()).ifPresent((presentUser) -> {throw new UserAlreadyExistsException("A user with this username already exists");});
+            userStore.findByUsername(user.getUsername().getValue()).ifPresent((presentUser) -> {
+                if (presentUser.getId() != user.getId())
+                    throw new UserAlreadyExistsException("A user with this username already exists");
+            });
             toUpdate.setUsername(user.getUsername());
         }
         if (user.getEmailAddress() != null) {
-            userStore.findByEmail(user.getUsername().getValue()).ifPresent((presentUser) -> {throw new UserAlreadyExistsException("A user with this email already exists");});
+            userStore.findByEmail(user.getUsername().getValue()).ifPresent((presentUser) -> {
+                if (presentUser.getId() != user.getId())
+                    throw new UserAlreadyExistsException("A user with this email already exists");
+            });
             toUpdate.setEmailAddress(user.getEmailAddress());
         }
         if (user.getPassword() != null) toUpdate.setPassword(user.getPassword());
