@@ -33,7 +33,7 @@ public class Truck extends DomainModel {
     public boolean isAvailableAtDate(LocalDateTime schedule) {
         boolean[] available = {true};
         deliveryDates.forEach(deliveryDate -> {
-            if (deliveryDate.getDayOfYear() == schedule.getDayOfYear()) available[0] = false;
+            if (deliveryDate.getDayOfYear() == schedule.getDayOfYear() && deliveryDate.getYear() == deliveryDate.getYear()) available[0] = false;
         });
         return available[0] && !schedule.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }

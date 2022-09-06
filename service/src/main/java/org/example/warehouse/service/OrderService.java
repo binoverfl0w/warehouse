@@ -107,7 +107,8 @@ public class OrderService extends DomainService {
                 } else throw new OrderNotModifiableException("Order cannot be modified");
             } else if (status.getValue().equals(Status.VALUES.FULFILLED.name())) {
                 if (toUpdate.getStatus().getValue().equals(Status.VALUES.UNDER_DELIVERY.name())) {
-                    if (toUpdate.getDeliveryDate().getDayOfYear() > LocalDateTime.now().getDayOfYear()) {
+                    if (LocalDateTime.now().getDayOfYear() > toUpdate.getDeliveryDate().getDayOfYear()
+                        && LocalDateTime.now().getYear() >= toUpdate.getDeliveryDate().getYear()) {
                         toUpdate.setStatus(status);
                     } else throw new OrderNotModifiableException("Order is still under delivery");
                 } else throw new OrderNotModifiableException("Order cannot be modified");
