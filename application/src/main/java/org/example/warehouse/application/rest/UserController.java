@@ -133,4 +133,10 @@ public class UserController {
         userService.requestNewPassword(randomKey);
         return ResponseEntity.ok(null);
     }
+
+    @PostMapping("/changepassword")
+    public ResponseEntity<Object> changePassword(@RequestBody UserDTO userDTO, @RequestParam String key) {
+        userService.updatePassword(key, passwordEncoder.encode(userDTO.getPassword()));
+        return ResponseEntity.ok(null);
+    }
 }

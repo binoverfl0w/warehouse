@@ -50,4 +50,8 @@ public class User extends DomainModel {
     public boolean canResetPassword() {
         return resetDate == null || resetDate.plusHours(1).isBefore(LocalDateTime.now());
     }
+
+    public boolean canChangePassword(ResetToken resetToken) {
+        return resetDate != null && resetDate.plusHours(1).isAfter(LocalDateTime.now()) && resetToken.getValue().equals(this.resetToken.getValue());
+    }
 }

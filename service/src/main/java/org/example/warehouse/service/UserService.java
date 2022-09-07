@@ -5,6 +5,7 @@ import org.example.warehouse.domain.IAuthenticationFacade;
 import org.example.warehouse.domain.user.IUserStore;
 import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.domain.vo.Password;
 import org.example.warehouse.domain.vo.ResetToken;
 import org.example.warehouse.service.exception.AccessDeniedException;
 import org.example.warehouse.service.exception.RoleNotFoundException;
@@ -81,5 +82,16 @@ public class UserService extends DomainService {
         toReset.setResetDate(LocalDateTime.now());
         toReset.setResetToken(new ResetToken(randomKey));
         return userStore.save(toReset);
+    }
+
+    public User updatePassword(String key, String newPassword) {
+        if (getAuthenticatedUser() == null) throw new AccessDeniedException();
+        User toUpdate = userStore.findById(getAuthenticatedUser().getId()).get();
+        if (toUpdate.canChangePassword(new ResetToken(key))) {
+            toUpdate.setPassword(new Password(newPassword));
+            toUpdate.setResetToken(new ResetToken(null));
+        } else
+            throw new IllegalArgumentException("Invalid verifier provided");
+        return userStore.save(toUpdate);
     }
 }
