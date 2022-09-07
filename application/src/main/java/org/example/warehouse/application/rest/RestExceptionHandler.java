@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.mail.MessagingException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -56,6 +57,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 //        });
 //        return handleError("Validation failed!", errors, HttpStatus.BAD_REQUEST);
 //    }
+
+    @ExceptionHandler({MessagingException.class})
+    public ResponseEntity<Object> handleMessagingException(MessagingException ex) {
+        return handleError("Email not sent!", ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler({AccessDeniedException.class, org.example.warehouse.service.exception.AccessDeniedException.class})
     public ResponseEntity<Object> handleAccessDeniedException(RuntimeException ex, WebRequest request) {

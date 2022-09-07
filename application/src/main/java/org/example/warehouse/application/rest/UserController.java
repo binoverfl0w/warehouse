@@ -6,6 +6,7 @@ import org.example.warehouse.application.rest.dto.UserDTO;
 import org.example.warehouse.application.security.jwt.JWTTokenUtil;
 import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.infrastructure.EmailService;
 import org.example.warehouse.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,14 +30,16 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private UserService userService;
+    private EmailService emailService;
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JWTTokenUtil jwtTokenUtil;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -107,5 +112,25 @@ public class UserController {
         LOGGER.info("[DELETE /users/" + id + "] id = " + id);
         userService.deleteUser(id);
         return new ResponseEntity<>(ResponseEntity.EMPTY, ResponseEntity.EMPTY.getHeaders(), HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<Object> requestNewPassword() throws MessagingException {
+        String randomKey = UUID.randomUUID().toString().replaceAll("_","");
+        // Get the user that wants to reset the password
+        User toReset = userService.getUser(userService.getAuthenticatedUser().getId());
+        if (toReset.canResetPassword()) {
+            EmailService.Email email = new EmailService.Email.EmailBuilder()
+                    .from("test@gmail.com")
+                    .to(toReset.getEmailAddress().getValue())
+                    .subject("Reset password!")
+                    .message("Your password reset link: " + "http://localhost:8443/changepassword?verify=" + randomKey + " is valid for one hour")
+                    .build();
+            LOGGER.info("[EMAIL] link = " + "http://localhost:8443/changepassword?verify=" + randomKey);
+            emailService.sendEmail(email);
+        } else
+            throw new IllegalStateException("You can attempt to reset your password only once per hour");
+        userService.requestNewPassword(randomKey);
+        return ResponseEntity.ok(null);
     }
 }

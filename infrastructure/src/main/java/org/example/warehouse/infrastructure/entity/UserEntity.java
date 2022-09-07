@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.warehouse.domain.user.Role;
 import org.example.warehouse.domain.user.User;
-import org.example.warehouse.domain.vo.EmailAddress;
-import org.example.warehouse.domain.vo.Fullname;
-import org.example.warehouse.domain.vo.Password;
-import org.example.warehouse.domain.vo.Username;
+import org.example.warehouse.domain.vo.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -32,6 +30,10 @@ public class UserEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ROLE_ID", nullable = false)
     private RoleEntity role;
+    @Column(name = "RESET_DATE")
+    private LocalDateTime resetDate;
+    @Column(name = "RESET_TOKEN")
+    private String resetToken;
 
     public User toDomainUser() {
         return new User(
@@ -40,7 +42,9 @@ public class UserEntity {
                 new Username(username),
                 new EmailAddress(email),
                 new Password(password),
-                role == null ? null : role.toDomainRole()
+                role == null ? null : role.toDomainRole(),
+                resetDate,
+                new ResetToken(resetToken)
         );
     }
 
@@ -52,6 +56,8 @@ public class UserEntity {
         mapUser.setEmail(user.getEmailAddress().getValue());
         mapUser.setPassword(user.getPassword().getValue());
         mapUser.setRole(RoleEntity.fromDomainRole(user.getRole()));
+        mapUser.setResetDate(user.getResetDate());
+        mapUser.setResetToken(user.getResetToken().getValue());
         return mapUser;
     }
 }

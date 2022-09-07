@@ -5,11 +5,13 @@ import org.example.warehouse.domain.IAuthenticationFacade;
 import org.example.warehouse.domain.user.IUserStore;
 import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.domain.vo.ResetToken;
 import org.example.warehouse.service.exception.AccessDeniedException;
 import org.example.warehouse.service.exception.RoleNotFoundException;
 import org.example.warehouse.service.exception.UserAlreadyExistsException;
 import org.example.warehouse.service.exception.UserNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,5 +73,13 @@ public class UserService extends DomainService {
         if (!hasRole("SYSTEM_ADMIN")) throw new AccessDeniedException();
         userStore.findById(id).orElseThrow(() -> new UserNotFoundException("id", id.toString()));
         userStore.deleteById(id);
+    }
+
+    public User requestNewPassword(String randomKey) {
+        User toReset = getAuthenticatedUser();
+        if (toReset == null) throw new AccessDeniedException();
+        toReset.setResetDate(LocalDateTime.now());
+        toReset.setResetToken(new ResetToken(randomKey));
+        return userStore.save(toReset);
     }
 }

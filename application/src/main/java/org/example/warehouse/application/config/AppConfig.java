@@ -7,6 +7,7 @@ import org.example.warehouse.domain.item.IItemStore;
 import org.example.warehouse.domain.order.IOrderStore;
 import org.example.warehouse.domain.truck.ITruckStore;
 import org.example.warehouse.domain.user.IUserStore;
+import org.example.warehouse.infrastructure.EmailService;
 import org.example.warehouse.infrastructure.repository.*;
 import org.example.warehouse.infrastructure.store.ItemStore;
 import org.example.warehouse.infrastructure.store.OrderStore;
@@ -22,6 +23,9 @@ public class AppConfig {
     public IUserStore userStore(UserRepository userRepository, RoleRepository roleRepository) {
         return new UserStore(userRepository, roleRepository);
     }
+
+    @Bean
+    public EmailService emailService() { return new EmailService(); }
 
     @Bean
     public CombinedInterface authenticationFacade(IUserStore userStore) {
