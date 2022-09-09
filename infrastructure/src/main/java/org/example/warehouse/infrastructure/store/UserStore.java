@@ -65,4 +65,9 @@ public class UserStore implements IUserStore {
     public Optional<Role> findRoleByName(String name) {
         return roleRepository.findByName(name).map(RoleEntity::toDomainRole);
     }
+
+    @Override
+    public Optional<User> findByResetToken(String resetToken) {
+        return userRepository.findByResetToken(resetToken).map(UserEntity::toDomainUser);
+    }
 }

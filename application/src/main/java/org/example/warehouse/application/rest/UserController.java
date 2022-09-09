@@ -5,6 +5,7 @@ import org.example.warehouse.application.rest.dto.PageDTO;
 import org.example.warehouse.application.rest.dto.UserDTO;
 import org.example.warehouse.application.security.jwt.JWTTokenUtil;
 import org.example.warehouse.domain.user.User;
+import org.example.warehouse.domain.vo.EmailAddress;
 import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.domain.vo.Password;
 import org.example.warehouse.domain.vo.ResetToken;
@@ -117,27 +118,29 @@ public class UserController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<Object> requestNewPassword() throws MessagingException {
+    public ResponseEntity<Object> requestNewPassword(@RequestBody UserDTO userDTO) throws MessagingException {
+        if (userDTO.getEmail() == null) throw new IllegalArgumentException("Email is required");
         String randomKey = UUID.randomUUID().toString().replaceAll("_","");
         // Get the user that wants to reset the password
-        User toReset = userService.getUser(userService.getAuthenticatedUser().getId());
+        User toReset = userService.getUserWithEmail(new EmailAddress(userDTO.getEmail()));
         if (toReset.canResetPassword()) {
             EmailService.Email email = new EmailService.Email.EmailBuilder()
                     .from("test@gmail.com")
                     .to(toReset.getEmailAddress().getValue())
                     .subject("Reset password!")
-                    .message("Your password reset link: " + "http://localhost:8443/changepassword?verify=" + randomKey + " is valid for one hour")
+                    .message("Your password reset link: " + "http://localhost:8443/changepassword?key=" + randomKey + " is valid for one hour")
                     .build();
-            LOGGER.info("[EMAIL] link = " + "http://localhost:8443/changepassword?verify=" + randomKey);
+            LOGGER.info("[EMAIL] link = " + "http://localhost:8443/changepassword?key=" + randomKey);
             emailService.sendEmail(email);
         } else
             throw new IllegalStateException("You can attempt to reset your password only once per hour");
-        userService.requestNewPassword(new ResetToken(randomKey));
+        userService.requestNewPassword(toReset, new ResetToken(randomKey));
         return ResponseEntity.ok(null);
     }
 
     @PostMapping("/changepassword")
     public ResponseEntity<Object> changePassword(@RequestBody UserDTO userDTO, @RequestParam String key) {
+        if (userDTO.getPassword() == null) throw new IllegalArgumentException("Password is required");
         userService.updatePassword(new ResetToken(key), new Password(passwordEncoder.encode(userDTO.getPassword())));
         return ResponseEntity.ok(null);
     }

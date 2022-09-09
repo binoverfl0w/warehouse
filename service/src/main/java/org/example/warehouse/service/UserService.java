@@ -4,13 +4,11 @@ import org.example.warehouse.domain.DomainService;
 import org.example.warehouse.domain.IAuthenticationFacade;
 import org.example.warehouse.domain.user.IUserStore;
 import org.example.warehouse.domain.user.User;
+import org.example.warehouse.domain.vo.EmailAddress;
 import org.example.warehouse.domain.vo.PageVO;
 import org.example.warehouse.domain.vo.Password;
 import org.example.warehouse.domain.vo.ResetToken;
-import org.example.warehouse.service.exception.AccessDeniedException;
-import org.example.warehouse.service.exception.RoleNotFoundException;
-import org.example.warehouse.service.exception.UserAlreadyExistsException;
-import org.example.warehouse.service.exception.UserNotFoundException;
+import org.example.warehouse.service.exception.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -76,22 +74,23 @@ public class UserService extends DomainService {
         userStore.deleteById(id);
     }
 
-    public User requestNewPassword(ResetToken randomKey) {
-        User toReset = getAuthenticatedUser();
-        if (toReset == null) throw new AccessDeniedException();
+    public User requestNewPassword(User toReset, ResetToken randomKey) {
         toReset.setResetDate(LocalDateTime.now());
         toReset.setResetToken(randomKey);
         return userStore.save(toReset);
     }
 
     public User updatePassword(ResetToken key, Password newPassword) {
-        if (getAuthenticatedUser() == null) throw new AccessDeniedException();
-        User toUpdate = userStore.findById(getAuthenticatedUser().getId()).get();
+        User toUpdate = userStore.findByResetToken(key.getValue()).orElseThrow(() -> new IllegalStateException("Invalid key"));
         if (toUpdate.canChangePassword(key)) {
             toUpdate.setPassword(newPassword);
             toUpdate.setResetToken(new ResetToken(null));
         } else
             throw new IllegalArgumentException("Invalid verifier provided");
         return userStore.save(toUpdate);
+    }
+
+    public User getUserWithEmail(EmailAddress emailAddress) {
+        return userStore.findByEmail(emailAddress.getValue()).orElseThrow(() -> new UserNotFoundException("email", emailAddress.getValue()));
     }
 }

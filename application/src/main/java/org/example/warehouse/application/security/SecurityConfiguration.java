@@ -71,6 +71,9 @@ public class SecurityConfiguration {
                 .mvcMatchers(HttpMethod.POST,"/users").permitAll()
                 // Everyone can see the items available
                 .mvcMatchers(HttpMethod.GET, "/items/**").permitAll()
+                // Reset and change password
+                .mvcMatchers(HttpMethod.POST, "/users/reset").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/users/changepassword/**").permitAll()
                 // Other resources require the user to be authenticated
                 .mvcMatchers("/**").authenticated()
         );

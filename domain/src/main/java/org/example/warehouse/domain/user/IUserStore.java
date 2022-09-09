@@ -18,4 +18,6 @@ public interface IUserStore {
     void deleteById(Long id);
 
     Optional<Role> findRoleByName(String name);
+
+    Optional<User> findByResetToken(String value);
 }
