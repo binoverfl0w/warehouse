@@ -76,19 +76,19 @@ public class UserService extends DomainService {
         userStore.deleteById(id);
     }
 
-    public User requestNewPassword(String randomKey) {
+    public User requestNewPassword(ResetToken randomKey) {
         User toReset = getAuthenticatedUser();
         if (toReset == null) throw new AccessDeniedException();
         toReset.setResetDate(LocalDateTime.now());
-        toReset.setResetToken(new ResetToken(randomKey));
+        toReset.setResetToken(randomKey);
         return userStore.save(toReset);
     }
 
-    public User updatePassword(String key, String newPassword) {
+    public User updatePassword(ResetToken key, Password newPassword) {
         if (getAuthenticatedUser() == null) throw new AccessDeniedException();
         User toUpdate = userStore.findById(getAuthenticatedUser().getId()).get();
-        if (toUpdate.canChangePassword(new ResetToken(key))) {
-            toUpdate.setPassword(new Password(newPassword));
+        if (toUpdate.canChangePassword(key)) {
+            toUpdate.setPassword(newPassword);
             toUpdate.setResetToken(new ResetToken(null));
         } else
             throw new IllegalArgumentException("Invalid verifier provided");

@@ -6,6 +6,8 @@ import org.example.warehouse.application.rest.dto.UserDTO;
 import org.example.warehouse.application.security.jwt.JWTTokenUtil;
 import org.example.warehouse.domain.user.User;
 import org.example.warehouse.domain.vo.PageVO;
+import org.example.warehouse.domain.vo.Password;
+import org.example.warehouse.domain.vo.ResetToken;
 import org.example.warehouse.infrastructure.EmailService;
 import org.example.warehouse.service.UserService;
 import org.slf4j.Logger;
@@ -130,13 +132,13 @@ public class UserController {
             emailService.sendEmail(email);
         } else
             throw new IllegalStateException("You can attempt to reset your password only once per hour");
-        userService.requestNewPassword(randomKey);
+        userService.requestNewPassword(new ResetToken(randomKey));
         return ResponseEntity.ok(null);
     }
 
     @PostMapping("/changepassword")
     public ResponseEntity<Object> changePassword(@RequestBody UserDTO userDTO, @RequestParam String key) {
-        userService.updatePassword(key, passwordEncoder.encode(userDTO.getPassword()));
+        userService.updatePassword(new ResetToken(key), new Password(passwordEncoder.encode(userDTO.getPassword())));
         return ResponseEntity.ok(null);
     }
 }
