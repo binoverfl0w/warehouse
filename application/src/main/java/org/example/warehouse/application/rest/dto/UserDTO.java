@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.warehouse.domain.user.User;
-import org.example.warehouse.domain.vo.EmailAddress;
-import org.example.warehouse.domain.vo.Fullname;
-import org.example.warehouse.domain.vo.Password;
-import org.example.warehouse.domain.vo.Username;
+import org.example.warehouse.domain.vo.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -87,7 +84,9 @@ public class UserDTO implements UserDetails, Serializable {
                 username == null ? null : new Username(username),
                 email == null ? null : new EmailAddress(email),
                 password == null ? null : new Password(password),
-                role == null ? null : role.toDomainRole()
+                role == null ? null : role.toDomainRole(),
+                null,
+                new ResetToken(null)
         );
     }
 
